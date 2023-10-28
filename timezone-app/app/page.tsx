@@ -220,7 +220,7 @@ export default function Home() {
       </div>
       {showForm && <Form onSubmit={handleSubmit} />}
       <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
-        <table className="min-w-full divide-y divide-gray-300">
+        <table data-testid="time-keeper-table" className="min-w-full divide-y divide-gray-300">
           <thead>
             <tr>
               <th
@@ -255,7 +255,7 @@ export default function Home() {
                     "relative py-4 pl-4 pr-3 text-sm sm:pl-6"
                   )}
                 >
-                  <div className="font-medium text-gray-900">
+                  <div data-testid="displayed-label-name" className="font-medium text-gray-900">
                     {tz.label}
                     {tz.isLocal ? (
                       <span className="ml-1 text-indigo-600">(You)</span>
