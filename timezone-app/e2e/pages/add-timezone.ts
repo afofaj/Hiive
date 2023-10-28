@@ -6,8 +6,6 @@ export class AddTimezoneModal {
     readonly labelInput: Locator;
     readonly locationDropdown: Locator;
     readonly saveButton: Locator;
-    readonly addTimezone2: Locator;
-
 
     constructor(page: Page) {
         this.page = page;
@@ -31,15 +29,6 @@ export class AddTimezoneModal {
     }
 
 };
-
-// export enum TimezoneOptions {
-//     EST = 'Eastern Standard Time',
-//     CST = 'Central Standard Time',
-//     MST = 'Mountain Standard Time',
-//     PST = 'Pacific Standard Time',
-//     AKST = 'Alaska Standard Time',
-//     HAST = 'Hawaii-Aleutian Standard Time',
-//   }
 
   export enum TimezoneOptions {
     EST = 'America/New_York',

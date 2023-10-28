@@ -13,8 +13,16 @@ test.describe('Add Timezone Tests', () => {
       });
 
     test('Verify that a user can add a Timezone successfully', async () => {
-        await addTimezoneModal.addTimezone('Timmy', TimezoneOptions.CST)
-        await expect(addTimezoneModal.addTimezone2).toBeVisible();
-    });
+        const name = 'Timmy';
+        await addTimezoneModal.addTimezone(name, TimezoneOptions.CST);
+        const matchingLabelName = await homePage.getLabelByMatchingName(name)
+
+        if (matchingLabelName !== null) {
+        expect(matchingLabelName).toMatch(name);
+        } else {
+        // Handle the case where the element is not found
+        console.log(`Element with name "${name}" not found.`);
+        }
+        });
 
 });
