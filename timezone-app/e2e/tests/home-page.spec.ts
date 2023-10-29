@@ -19,7 +19,7 @@ test.describe('Homepage Timekeeper Table Tests', () => {
         if (matchingLabelName !== null) {
         expect(matchingLabelName).toMatch(label);
         } else {
-        // Handle the case where the element is not found
+        // This handles the case where the element is not found
         console.log(`Element with name "${label}" not found.`);
         }
         });

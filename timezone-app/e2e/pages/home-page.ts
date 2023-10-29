@@ -11,7 +11,7 @@ export class HomePage {
 
         this.displayedLabelName = page.locator('[data-testid="displayed-label-name"]');
         this.timeKeeperTableRow = page.locator('[data-testid="time-keeper-table-body"]>tr');
-        this.localTimeCell = page.locator('[data-testid="time-keeper-table-body"]>tr>td:nth-child(3)')
+        this.localTimeCell = page.locator('[data-testid="time-keeper-table-body"]>tr>td:nth-child(3)');
     }
 
     async goToHomePage() {
@@ -36,7 +36,6 @@ export class HomePage {
         for (const row of rows) {
             const textContent = await row.textContent();
             if (textContent !== null && textContent.includes(label)) {
-                // Assuming the "Delete" button is a child element in the row, you can locate and click it
                 const deleteButton = row.locator('[data-testid="delete-button"]').first();
                 await deleteButton.click();
                 return; 
