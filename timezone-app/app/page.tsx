@@ -220,7 +220,7 @@ export default function Home() {
       </div>
       {showForm && <Form onSubmit={handleSubmit} />}
       <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
-        <table data-testid="time-keeper-table" className="min-w-full divide-y divide-gray-300">
+        <table className="min-w-full divide-y divide-gray-300">
           <thead>
             <tr>
               <th
@@ -246,7 +246,7 @@ export default function Home() {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-testid="time-keeper-table-body">
             {sortedZones.map((tz, index) => (
               <tr key={index}>
                 <td

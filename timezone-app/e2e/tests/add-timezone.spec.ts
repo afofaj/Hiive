@@ -13,16 +13,27 @@ test.describe('Add Timezone Tests', () => {
       });
 
     test('Verify that a user can add a Timezone successfully', async () => {
-        const name = 'Timmy';
-        await addTimezoneModal.addTimezone(name, TimezoneOptions.CST);
-        const matchingLabelName = await homePage.getLabelByMatchingName(name)
+        const label = 'Timmy';
+        await addTimezoneModal.addTimezone(label, TimezoneOptions.CST);
+        const matchingLabelName = await homePage.getLabelByMatchingName(label)
 
         if (matchingLabelName !== null) {
-        expect(matchingLabelName).toMatch(name);
+        expect(matchingLabelName).toMatch(label);
         } else {
         // Handle the case where the element is not found
-        console.log(`Element with name "${name}" not found.`);
+        console.log(`Element with name "${label}" not found.`);
         }
+        });
+
+    test('Verify that a user can add more than One record with the same timezone', async ({ page }) => {
+        const label1 = 'Timmy';
+        const label2 = 'Jane';
+        await addTimezoneModal.addTimezone(label1, TimezoneOptions.CST);
+        await addTimezoneModal.addTimezone(label2, TimezoneOptions.CST);
+
+        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label2 })).toBeVisible();
+        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label1 })).toBeVisible(); //This assertion fails because Jane replaced Timmy on the table
+       
         });
 
 });

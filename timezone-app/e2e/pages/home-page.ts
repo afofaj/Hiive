@@ -2,34 +2,24 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class HomePage {
     readonly page: Page;
-    readonly timeKeeperTable: Locator;
-    readonly deleteRecord: Locator;
     readonly displayedLabelName: Locator;
-    readonly saveButton: Locator;
+    readonly timeKeeperTableRow: Locator;
+    readonly localTimeCell: Locator;
 
     constructor(page: Page) {
         this.page = page;
 
-        this.timeKeeperTable = page.getByTestId('time-keeper-table');
-        this.deleteRecord = page.getByTestId('delete-button');
-        this.displayedLabelName = page.getByTestId('displayed-label-name');
-        this.saveButton = page.getByTestId('submit-button');
+        this.displayedLabelName = page.locator('[data-testid="displayed-label-name"]');
+        this.timeKeeperTableRow = page.locator('[data-testid="time-keeper-table-body"]>tr');
+        this.localTimeCell = page.locator('[data-testid="time-keeper-table-body"]>tr>td:nth-child(3)')
     }
 
     async goToHomePage() {
         await this.page.goto(``);
     };
 
-    async getTableRowLabelName() {
-        return await this.timeKeeperTable
-          .locator('tbody')
-          .locator('tr')
-          .locator('[data-testid="displayed-label-name"]')
-          .textContent();
-      }
-
     async getLabelByMatchingName(name: string): Promise<string | null> {
-        const elements = await this.page.locator('[data-testid="displayed-label-name"]').all();
+        const elements = await this.displayedLabelName.all();
     
         for (const element of elements) {
             const textContent = await element.textContent();
@@ -38,6 +28,44 @@ export class HomePage {
             }
         }
         return null; // Element with the specified name not found
+    }
+
+    async findRowAndClickDelete(label: string) {
+        const rows = await this.timeKeeperTableRow.all();
+        
+        for (const row of rows) {
+            const textContent = await row.textContent();
+            if (textContent !== null && textContent.includes(label)) {
+                // Assuming the "Delete" button is a child element in the row, you can locate and click it
+                const deleteButton = row.locator('[data-testid="delete-button"]').first();
+                await deleteButton.click();
+                return; 
+            }
+        }
+        console.log(`Row with name "${label}" not found.`);
+    }
+
+    async  areTimesSorted() {
+        const timeElements = await this.localTimeCell.all();
+    
+        // Extract the text content of time elements
+        const timeStrings = await Promise.all(timeElements.map(async (timeElement) => {
+            const timeText = await timeElement.textContent();
+            return timeText || ''; // Handle null text content, if any
+        }));
+    
+        // Convert the time strings to Date objects
+        const times = timeStrings.map((timeString) => {
+            return new Date(`January 1, 2023 ${timeString}`);
+        });
+    
+        // Check if times are in ascending order
+        for (let i = 1; i < times.length; i++) {
+            if (times[i] < times[i - 1]) {
+                return false;
+            }
+        }
+        return true; 
     }
 
 };
