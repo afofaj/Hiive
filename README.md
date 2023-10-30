@@ -1,6 +1,6 @@
 
 ## Test Report
-The issues found during testing have been created in the github repo
+The issues found during testing have been created in the github repo `https://github.com/afofaj/Hiive/issues`.
 
 I also added manual test cases which can be found in the `time-keeper-test-cases.xlsx` file.
 
