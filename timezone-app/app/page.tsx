@@ -248,7 +248,7 @@ export default function Home() {
           </thead>
           <tbody data-testid="time-keeper-table-body">
             {sortedZones.map((tz, index) => (
-              <tr key={index}>
+              <tr data-testid="time-keeper-table-row" key={index}>
                 <td
                   className={classNames(
                     index === 0 ? "" : "border-t border-transparent",
@@ -273,7 +273,8 @@ export default function Home() {
                 >
                   {tz.zone}
                 </td>
-                <td
+                <td 
+                  data-testid="local-time-cell"
                   className={classNames(
                     index === 0 ? "" : "border-t border-gray-200",
                     "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"

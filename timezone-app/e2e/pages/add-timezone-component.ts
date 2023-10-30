@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 
-export class AddTimezoneModal {
+export class AddTimezoneComponent {
     readonly page: Page;
     readonly addTimezoneButton: Locator;
     readonly labelInput: Locator;

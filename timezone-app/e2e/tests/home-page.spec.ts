@@ -1,60 +1,51 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../pages/home-page';
-import { AddTimezoneModal, TimezoneOptions } from '../pages/add-timezone';
+import { AddTimezoneComponent, TimezoneOptions } from '../pages/add-timezone-component';
 
 test.describe('Homepage Timekeeper Table Tests', () => {
     let homePage: HomePage;
-    let addTimezoneModal: AddTimezoneModal;
+    let addTimezoneComponent: AddTimezoneComponent;
 
     test.beforeEach(async ({ page }) => {
         homePage = new HomePage(page);
-        addTimezoneModal = new AddTimezoneModal(page);
+        addTimezoneComponent = new AddTimezoneComponent(page);
         await homePage.goToHomePage();
-      });
+    });
 
     test('Verify that a local timezone record marked as "You" exists by default on Timekeeper table ', async () => {
         const label = 'Local(You)';
-        const matchingLabelName = await homePage.getLabelByMatchingName(label)
+        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible();
+    });
 
-        if (matchingLabelName !== null) {
-        expect(matchingLabelName).toMatch(label);
-        } else {
-        // This handles the case where the element is not found
-        console.log(`Element with name "${label}" not found.`);
-        }
-        });
-
-    test('Verify that a user can delete a timezone record from the Timekeeper table', async ({ page }) => {
+    test('Verify that a user can delete a timezone record from the Timekeeper table', async () => {
         const label = 'Frank';
-        await addTimezoneModal.addTimezone(label, TimezoneOptions.CST);
-        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label })).toBeVisible();
-        await homePage.findRowAndClickDelete(label);
-        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label })).not.toBeVisible()
-        });
+        await addTimezoneComponent.addTimezone(label, TimezoneOptions.CST);
+        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible();
+        await homePage.deleteTimezone(label);
+        await expect(homePage.getDisplayedLabelLocator(label)).not.toBeVisible();
+    });
 
-    test('Verify that a user cannot delete the "You" record from the Timekeeper table', async ({ page }) => {
+    test('Verify that a user cannot delete the "You" record from the Timekeeper table', async () => {
         const label = 'Local(You)';
-        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label })).toBeVisible();
-        await homePage.findRowAndClickDelete(label);
-        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label })).toBeVisible() //This assertion fails because the row for the You record was deleted
-        });
+        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible();
+        await homePage.deleteTimezone(label);
+        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible() //This assertion fails because the row for the You record was deleted
+    });
 
     test('Verify that the table is sorted by the current time, such that the earliest time is first, and the latest time is last', async () => {
-        const label1 = 'Susan';
-        const label2 = 'Europe HQ';
-        const label3 = 'Philip';
-        const label4 = 'Tom';
-        const label5 = 'Sharon';
-        const label6 = 'Peter';
-        await addTimezoneModal.addTimezone(label1, TimezoneOptions.EST);
-        await addTimezoneModal.addTimezone(label2, TimezoneOptions.CST);
-        await addTimezoneModal.addTimezone(label3, TimezoneOptions.MST);
-        await addTimezoneModal.addTimezone(label4, TimezoneOptions.PST);
-        await addTimezoneModal.addTimezone(label5, TimezoneOptions.AKST);
-        await addTimezoneModal.addTimezone(label6, TimezoneOptions.HAST);
-       
+        const timezones = [
+            {label: 'Susan', timezoneOption: TimezoneOptions.EST},
+            {label: 'Europe HQ', timezoneOption: TimezoneOptions.CST},
+            {label: 'Philip', timezoneOption: TimezoneOptions.MST},
+            {label: 'Tom', timezoneOption: TimezoneOptions.PST},
+            {label: 'Sharon', timezoneOption: TimezoneOptions.AKST},
+            {label: 'Peter', timezoneOption: TimezoneOptions.HAST}
+        ]
+
+        for (const timezone of timezones){
+            await addTimezoneComponent.addTimezone(timezone.label, timezone.timezoneOption);
+        }
+
         expect(await homePage.areTimesSorted()).toBe(true); //This assertion fails because time is not sorted 
-
-        });
-
+    });
 });

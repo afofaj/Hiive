@@ -1,39 +1,30 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../pages/home-page';
-import { AddTimezoneModal, TimezoneOptions } from '../pages/add-timezone';
+import { AddTimezoneComponent, TimezoneOptions } from '../pages/add-timezone-component';
 
 test.describe('Add Timezone Tests', () => {
     let homePage: HomePage;
-    let addTimezoneModal: AddTimezoneModal;
+    let addTimezoneComponent: AddTimezoneComponent;
 
     test.beforeEach(async ({ page }) => {
         homePage = new HomePage(page);
-        addTimezoneModal = new AddTimezoneModal(page);
+        addTimezoneComponent = new AddTimezoneComponent(page);
         await homePage.goToHomePage();
-      });
+    });
 
     test('Verify that a user can add a Timezone successfully', async () => {
         const label = 'Timmy';
-        await addTimezoneModal.addTimezone(label, TimezoneOptions.CST);
-        const matchingLabelName = await homePage.getLabelByMatchingName(label)
+        await addTimezoneComponent.addTimezone(label, TimezoneOptions.CST);
+        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible();
+    });
 
-        if (matchingLabelName !== null) {
-        expect(matchingLabelName).toMatch(label);
-        } else {
-        // Handle the case where the element is not found
-        console.log(`Element with name "${label}" not found.`);
-        }
-        });
-
-    test('Verify that a user can add more than One record with the same timezone', async ({ page }) => {
+    test('Verify that a user can add more than one record with the same timezone', async () => {
         const label1 = 'Timmy';
         const label2 = 'Jane';
-        await addTimezoneModal.addTimezone(label1, TimezoneOptions.CST);
-        await addTimezoneModal.addTimezone(label2, TimezoneOptions.CST);
+        await addTimezoneComponent.addTimezone(label1, TimezoneOptions.CST);
+        await addTimezoneComponent.addTimezone(label2, TimezoneOptions.CST);
 
-        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label2 })).toBeVisible();
-        await expect(page.locator('[data-testid="displayed-label-name"]', { hasText: label1 })).toBeVisible(); //This assertion fails because Jane replaced Timmy on the table
-       
-        });
-
+        await expect(homePage.getDisplayedLabelLocator(label2)).toBeVisible();
+        await expect(homePage.getDisplayedLabelLocator(label1)).toBeVisible(); //This assertion fails because label Jane replaced Timmy on the table
+    });
 });

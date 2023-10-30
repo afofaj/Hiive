@@ -10,38 +10,16 @@ export class HomePage {
         this.page = page;
 
         this.displayedLabelName = page.locator('[data-testid="displayed-label-name"]');
-        this.timeKeeperTableRow = page.locator('[data-testid="time-keeper-table-body"]>tr');
-        this.localTimeCell = page.locator('[data-testid="time-keeper-table-body"]>tr>td:nth-child(3)');
+        this.timeKeeperTableRow = page.locator('[data-testid="time-keeper-table-row"]');
+        this.localTimeCell = page.locator('[data-testid="local-time-cell"]');
     }
 
     async goToHomePage() {
         await this.page.goto(``);
-    };
-
-    async getLabelByMatchingName(name: string): Promise<string | null> {
-        const elements = await this.displayedLabelName.all();
-    
-        for (const element of elements) {
-            const textContent = await element.textContent();
-            if (textContent === name) {
-                return textContent;
-            }
-        }
-        return null; // Element with the specified name not found
     }
 
-    async findRowAndClickDelete(label: string) {
-        const rows = await this.timeKeeperTableRow.all();
-        
-        for (const row of rows) {
-            const textContent = await row.textContent();
-            if (textContent !== null && textContent.includes(label)) {
-                const deleteButton = row.locator('[data-testid="delete-button"]').first();
-                await deleteButton.click();
-                return; 
-            }
-        }
-        console.log(`Row with name "${label}" not found.`);
+    async deleteTimezone(label: string) {
+        await this.timeKeeperTableRow.filter( {hasText: label}).getByTestId("delete-button").click();
     }
 
     async  areTimesSorted() {
@@ -49,8 +27,7 @@ export class HomePage {
     
         // Extract the text content of time elements
         const timeStrings = await Promise.all(timeElements.map(async (timeElement) => {
-            const timeText = await timeElement.textContent();
-            return timeText || ''; // Handle null text content, if any
+            return await timeElement.textContent();
         }));
     
         // Convert the time strings to Date objects
@@ -64,7 +41,10 @@ export class HomePage {
                 return false;
             }
         }
-        return true; 
+        return true;
     }
 
+    getDisplayedLabelLocator(label: string) {
+       return this.page.locator('[data-testid="displayed-label-name"]', { hasText: label })
+    }
 };
