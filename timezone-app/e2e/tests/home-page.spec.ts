@@ -29,7 +29,7 @@ test.describe('Homepage Timekeeper Table Tests', () => {
         const label = 'Local(You)';
         await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible();
         await homePage.deleteTimezone(label);
-        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible() //This assertion fails because the row for the You record was deleted
+        await expect(homePage.getDisplayedLabelLocator(label)).toBeVisible(); //This assertion fails because the row for the Local(You) record was deleted
     });
 
     test('Verify that the table is sorted by the current time, such that the earliest time is first, and the latest time is last', async () => {
@@ -46,6 +46,6 @@ test.describe('Homepage Timekeeper Table Tests', () => {
             await addTimezoneComponent.addTimezone(timezone.label, timezone.timezoneOption);
         }
 
-        expect(await homePage.areTimesSorted()).toBe(true); //This assertion fails because time is not sorted 
+        expect(await homePage.areTimesSorted()).toBe(true); //This assertion fails because time is not sorted by earliest
     });
 });
