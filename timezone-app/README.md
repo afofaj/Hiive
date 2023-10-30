@@ -21,9 +21,3 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 ## Testing
 
 To run tests, ensure that the development server is running in background. Then, run `npm run e2e` or `yarn e2e` to execute tests. If this is your first time running Playwright tests, you should run `npx playwright install` or `yarn playwright install` to install browser binaries.
-
-## Test Report
-
-The manual test cases can be found in the `time-keeper-test-cases.xlsx` file.
-
-**Three** of the E2e test scenarios failed because the assertions are meant to test current issues in the web app. These tests will pass when the issues are fixed by the developer.
